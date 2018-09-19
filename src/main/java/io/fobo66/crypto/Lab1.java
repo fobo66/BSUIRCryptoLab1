@@ -7,6 +7,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.util.Arrays;
+import javax.xml.bind.DatatypeConverter;
 
 public class Lab1 {
 
@@ -36,11 +37,11 @@ public class Lab1 {
                 mode = loadDESMode(cmd);
             }
 
-            byte[] cypherText = DES.encrypt(clearText.getBytes(), key.getBytes());
-            byte[] decryptedCypherText = DES.decrypt(cypherText, key.getBytes());
+            byte[] encryptedText = DES.encrypt(clearText.getBytes(), key.getBytes());
+            byte[] decryptedText = DES.decrypt(encryptedText, key.getBytes());
 
-            System.out.println(Arrays.toString(cypherText));
-            System.out.println(new String(decryptedCypherText));
+            System.out.println(DatatypeConverter.printHexBinary(encryptedText));
+            System.out.println(new String(decryptedText));
         } catch (ParseException e) {
             System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
         }
