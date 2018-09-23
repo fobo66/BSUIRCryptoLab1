@@ -1,25 +1,20 @@
 package io.fobo66.crypto;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 
-import java.util.Arrays;
 import javax.xml.bind.DatatypeConverter;
 
 public class Lab1 {
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         String clearText = "Hello World!";
         String key = "password";
         DESMode mode = DESMode.ECB;
-        
+
         Options options = new Options();
         options.addOption("file", true, "Input file");
         options.addOption("key", true, "Encryption key");
-        options.addOption("m", "mode", true, "Encryption mode for DES (ECB, CBC, CFB, OFB)");
+        options.addOption("m", "mode", true, "Operation mode for DES (ECB, CBC, CFB, OFB)");
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -37,21 +32,26 @@ public class Lab1 {
                 mode = loadDESMode(cmd);
             }
 
-            byte[] encryptedText = DES.encrypt(clearText.getBytes(), key.getBytes());
-            byte[] decryptedText = DES.decrypt(encryptedText, key.getBytes());
+            byte[] encryptedText = DES.encrypt(clearText.getBytes(), key.getBytes(), mode);
+            byte[] decryptedText = DES.decrypt(encryptedText, key.getBytes(), mode);
 
-            System.out.println(DatatypeConverter.printHexBinary(encryptedText));
-            System.out.println(new String(decryptedText));
+            printResults(clearText, encryptedText, decryptedText);
         } catch (ParseException e) {
-            System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
+            System.err.println("Parsing failed. Reason: " + e.getMessage());
         }
     }
 
-    private static String loadClearTextFromFile(String optionValue) {
+    private static String loadClearTextFromFile(String filePath) {
         return "";
     }
 
     private static DESMode loadDESMode(CommandLine cmd) {
         return DESMode.valueOf(cmd.getOptionValue("m").toUpperCase());
+    }
+
+    private static void printResults(String clearText, byte[] encryptedText, byte[] decryptedText) {
+        System.out.println("Clear text: " + clearText);
+        System.out.println("Encrypted text: " + DatatypeConverter.printHexBinary(encryptedText));
+        System.out.println("Decrypted text: " + new String(decryptedText));
     }
 }

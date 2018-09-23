@@ -1,7 +1,13 @@
 package io.fobo66.crypto;
 
+import java.util.Arrays;
+
 public class DES {
-    // initial permuation table
+
+    // initialization vector for CBC, CFB and OFB modes
+    private static int[] IV = {220, 190, 106, 231, 234, 93, 92, 97};
+
+    // initial permutation table
     private static int[] IP = {58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22,
             14, 6, 64, 56, 48, 40, 32, 24, 16, 8, 57, 49, 41, 33, 25, 17, 9, 1, 59, 51, 43, 35, 27, 19, 11, 3, 61, 53,
             45, 37, 29, 21, 13, 5, 63, 55, 47, 39, 31, 23, 15, 7};
@@ -127,12 +133,12 @@ public class DES {
 
     }
 
-    private static byte[] encrypt64Block(byte[] bloc, byte[][] subkeys, boolean isDecrypt) {
-        byte[] result = new byte[bloc.length];
-        byte[] R = new byte[bloc.length / 2];
-        byte[] L = new byte[bloc.length / 2];
+    private static byte[] encrypt64Block(byte[] block, byte[][] subkeys, boolean isDecrypt) {
+        byte[] result = new byte[block.length];
+        byte[] R = new byte[block.length / 2];
+        byte[] L = new byte[block.length / 2];
 
-        result = permute(bloc, IP);
+        result = permute(block, IP);
 
         L = extractBits(result, 0, IP.length / 2);
         R = extractBits(result, IP.length / 2, IP.length / 2);
@@ -179,12 +185,12 @@ public class DES {
         return out;
     }
 
-    private static byte[] separateBytes(byte[] in, int len) {
-        int numOfBytes = (8 * in.length - 1) / len + 1;
+    private static byte[] separateBytes(byte[] in, int length) {
+        int numOfBytes = (8 * in.length - 1) / length + 1;
         byte[] out = new byte[numOfBytes];
         for (int i = 0; i < numOfBytes; i++) {
-            for (int j = 0; j < len; j++) {
-                int val = extractBit(in, len * i + j);
+            for (int j = 0; j < length; j++) {
+                int val = extractBit(in, length * i + j);
                 setBit(out, 8 * i + j, val);
             }
         }
@@ -242,15 +248,13 @@ public class DES {
         return result;
     }
 
-    public static byte[] encrypt(byte[] data, byte[] key) {
+    public static byte[] encrypt(byte[] data, byte[] key, DESMode mode) {
         int i;
         int length = 8 - data.length % 8;
         byte[] padding = new byte[length];
 
         padding[0] = (byte) 0x80;
-
-        for (i = 1; i < length; i++)
-            padding[i] = 0;
+        Arrays.fill(padding, 1, length, (byte) 0);
 
         byte[] result = new byte[data.length + length];
         byte[] block = new byte[8];
@@ -278,7 +282,7 @@ public class DES {
         return result;
     }
 
-    public static byte[] decrypt(byte[] data, byte[] key) {
+    public static byte[] decrypt(byte[] data, byte[] key, DESMode mode) {
         int i;
         byte[] result = new byte[data.length];
         byte[] block = new byte[8];
