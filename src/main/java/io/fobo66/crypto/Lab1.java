@@ -3,6 +3,9 @@ package io.fobo66.crypto;
 import org.apache.commons.cli.*;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Lab1 {
 
@@ -12,7 +15,7 @@ public class Lab1 {
         DESMode mode = DESMode.ECB;
 
         Options options = new Options();
-        options.addOption("file", true, "Input file");
+        options.addOption("f", "file", true, "Input file");
         options.addOption("key", true, "Encryption key");
         options.addOption("m", "mode", true, "Operation mode for DES (ECB, CBC, CFB, OFB)");
 
@@ -21,7 +24,9 @@ public class Lab1 {
             CommandLine cmd = parser.parse(options, args);
 
             if (cmd.hasOption("file")) {
-                clearText = loadClearTextFromFile(cmd.getOptionValue("file"));
+                String filePath = cmd.getOptionValue("file");
+                System.out.format("Reading cleartext from file %s...%n", filePath);
+                clearText = loadClearTextFromFile(filePath);
             }
 
             if (cmd.hasOption("key")) {
@@ -37,12 +42,15 @@ public class Lab1 {
 
             printResults(clearText, encryptedText, decryptedText);
         } catch (ParseException e) {
-            System.err.println("Parsing failed. Reason: " + e.getMessage());
+            System.err.println("Failed to parse command line arguments. Reason: " + e.getMessage());
+            System.exit(1);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read cleartext from file", e);
         }
     }
 
-    private static String loadClearTextFromFile(String filePath) {
-        return "";
+    private static String loadClearTextFromFile(String filePath) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 
     private static DESMode loadDESMode(CommandLine cmd) {
