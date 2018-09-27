@@ -37,6 +37,7 @@ public class Lab1 {
                 mode = loadDESMode(cmd);
             }
 
+            System.out.format("Using %s mode of operation...%n", mode);
             byte[] encryptedText = DES.encrypt(clearText.getBytes(), key.getBytes(), mode);
             byte[] decryptedText = DES.decrypt(encryptedText, key.getBytes(), mode);
 

@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class DES {
 
     // initialization vector for CBC, CFB and OFB modes
-    private static int[] IV = {220, 190, 106, 231, 234, 93, 92, 97};
+    private static byte[] IV = {(byte) 220, (byte) 190, 106, (byte) 231, (byte) 234, 93, 92, 97};
 
     // initial permutation table
     private static int[] IP = {58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22,
@@ -73,8 +73,6 @@ public class DES {
 
             }};
 
-    private static byte[][] K;
-
     private static void setBit(byte[] data, int pos, int val) {
         int posByte = pos / 8;
         int posBit = pos % 8;
@@ -133,10 +131,11 @@ public class DES {
 
     }
 
-    private static byte[] encrypt64Block(byte[] block, byte[][] subkeys, boolean isDecrypt) {
+    private static byte[] encrypt64Block(byte[] block, byte[] key, boolean isDecrypt) {
         byte[] result = new byte[block.length];
         byte[] R = new byte[block.length / 2];
         byte[] L = new byte[block.length / 2];
+        byte[][] subkeys = generateSubKeys(key);
 
         result = permute(block, IP);
 
@@ -252,21 +251,42 @@ public class DES {
         int i;
         int length = 8 - data.length % 8;
         byte[] padding = new byte[length];
+        byte[] feedback = new byte[8];
+
+        System.arraycopy(IV, 0, feedback, 0, feedback.length);
 
         padding[0] = (byte) 0x80;
         Arrays.fill(padding, 1, length, (byte) 0);
 
         byte[] result = new byte[data.length + length];
         byte[] block = new byte[8];
-
-        K = generateSubKeys(key);
+        byte[] processedBlock = new byte[8];
 
         int count = 0;
 
         for (i = 0; i < data.length + length; i++) {
             if (i > 0 && i % 8 == 0) {
-                block = encrypt64Block(block, K, false);
-                System.arraycopy(block, 0, result, i - 8, block.length);
+                switch (mode) {
+                    case ECB:
+                        processedBlock = encrypt64Block(block, key, false);
+                        break;
+                    case CBC:
+                        processedBlock = xorBytes(block, feedback);
+                        processedBlock = encrypt64Block(processedBlock, key, false);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        break;
+                    case CFB:
+                        processedBlock = encrypt64Block(key, feedback, false);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        processedBlock = xorBytes(processedBlock, block);
+                        break;
+                    case OFB:
+                        processedBlock = encrypt64Block(feedback, key, false);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        processedBlock = xorBytes(processedBlock, block);
+                        break;
+                }
+                System.arraycopy(processedBlock, 0, result, i - 8, block.length);
             }
             if (i < data.length)
                 block[i % 8] = data[i];
@@ -276,7 +296,7 @@ public class DES {
             }
         }
         if (block.length == 8) {
-            block = encrypt64Block(block, K, false);
+            block = encrypt64Block(block, key, false);
             System.arraycopy(block, 0, result, i - 8, block.length);
         }
         return result;
@@ -286,18 +306,39 @@ public class DES {
         int i;
         byte[] result = new byte[data.length];
         byte[] block = new byte[8];
-
-        K = generateSubKeys(key);
+        byte[] processedBlock = new byte[8];
+        byte[] feedback = new byte[8];
+        System.arraycopy(IV, 0, feedback, 0, feedback.length);
 
         for (i = 0; i < data.length; i++) {
             if (i > 0 && i % 8 == 0) {
-                block = encrypt64Block(block, K, true);
-                System.arraycopy(block, 0, result, i - 8, block.length);
+                switch (mode) {
+
+                    case ECB:
+                        processedBlock = encrypt64Block(block, key, true);
+                        break;
+                    case CBC:
+                        processedBlock = encrypt64Block(block, key, true);
+                        processedBlock = xorBytes(processedBlock, feedback);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        break;
+                    case CFB:
+                        processedBlock = encrypt64Block(key, feedback, false);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        processedBlock = xorBytes(processedBlock, block);
+                        break;
+                    case OFB:
+                        processedBlock = encrypt64Block(feedback, key, false);
+                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        processedBlock = xorBytes(processedBlock, block);
+                        break;
+                }
+                System.arraycopy(processedBlock, 0, result, i - 8, block.length);
             }
             if (i < data.length)
                 block[i % 8] = data[i];
         }
-        block = encrypt64Block(block, K, true);
+        block = encrypt64Block(block, key, true);
         System.arraycopy(block, 0, result, i - 8, block.length);
 
         result = deletePadding(result);
