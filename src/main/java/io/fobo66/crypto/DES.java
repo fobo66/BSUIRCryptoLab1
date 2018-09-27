@@ -319,8 +319,8 @@ public class DES {
                         break;
                     case CBC:
                         processedBlock = encrypt64Block(block, key, true);
-                        processedBlock = xorBytes(processedBlock, feedback);
-                        feedback = Arrays.copyOfRange(processedBlock, 0, 8);
+                        processedBlock = xorBytes(feedback, processedBlock);
+                        feedback = Arrays.copyOfRange(block, 0, 8);
                         break;
                     case CFB:
                         processedBlock = encrypt64Block(key, feedback, false);
