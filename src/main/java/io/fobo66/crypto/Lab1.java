@@ -2,8 +2,8 @@ package io.fobo66.crypto;
 
 import org.apache.commons.cli.*;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -60,7 +60,7 @@ public class Lab1 {
 
     private static void printResults(String clearText, byte[] encryptedText, byte[] decryptedText) {
         System.out.println("Clear text: " + clearText);
-        System.out.println("Encrypted text: " + DatatypeConverter.printHexBinary(encryptedText));
+        System.out.println("Encrypted text: " + new BigInteger(encryptedText).toString(16));
         System.out.println("Decrypted text: " + new String(decryptedText));
     }
 }
