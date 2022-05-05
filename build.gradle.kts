@@ -13,5 +13,5 @@ allprojects{
 }
 
 dependencies {
-    implementation("commons-cli:commons-cli:1.4")
+    implementation("commons-cli:commons-cli:1.5.0")
 }
