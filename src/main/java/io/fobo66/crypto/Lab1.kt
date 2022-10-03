@@ -1,66 +1,52 @@
-package io.fobo66.crypto;
+package io.fobo66.crypto
 
-import org.apache.commons.cli.*;
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.default
+import java.io.IOException
+import java.math.BigInteger
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.*
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+fun main(args: Array<String>) {
+    var clearText = "Hello World!"
+    val mode: DESMode
 
-public class Lab1 {
+    val parser = ArgParser("lab1")
 
-    public static void main(String[] args) {
-        String clearText = "Hello World!";
-        String key = "password";
-        DESMode mode = DESMode.ECB;
+    val inputFile by parser.option(ArgType.String, fullName = "file", shortName = "f", description = "Input file")
+    val key by parser.option(ArgType.String, fullName = "key", shortName = "k", description = "Encryption key").default("password")
+    val modeKey by parser.option(ArgType.String, fullName = "mode", shortName = "m", description = "Operation mode for DES (ECB, CBC, CFB, OFB)").default("ECB")
 
-        Options options = new Options();
-        options.addOption("f", "file", true, "Input file");
-        options.addOption("key", true, "Encryption key");
-        options.addOption("m", "mode", true, "Operation mode for DES (ECB, CBC, CFB, OFB)");
-
-        CommandLineParser parser = new DefaultParser();
-        try {
-            CommandLine cmd = parser.parse(options, args);
-
-            if (cmd.hasOption("file")) {
-                String filePath = cmd.getOptionValue("file");
-                System.out.format("Reading cleartext from file %s...%n", filePath);
-                clearText = loadClearTextFromFile(filePath);
-            }
-
-            if (cmd.hasOption("key")) {
-                key = cmd.getOptionValue("key");
-            }
-
-            if (cmd.hasOption("m")) {
-                mode = loadDESMode(cmd);
-            }
-
-            System.out.format("Using %s mode of operation...%n", mode);
-            byte[] encryptedText = DES.encrypt(clearText.getBytes(), key.getBytes(), mode);
-            byte[] decryptedText = DES.decrypt(encryptedText, key.getBytes(), mode);
-
-            printResults(clearText, encryptedText, decryptedText);
-        } catch (ParseException e) {
-            System.err.println("Failed to parse command line arguments. Reason: " + e.getMessage());
-            System.exit(1);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read cleartext from file", e);
+    try {
+        parser.parse(args)
+        if (inputFile != null) {
+            val filePath = inputFile!!
+            println("Reading cleartext from file $filePath...")
+            clearText = loadClearTextFromFile(filePath)
         }
+        mode = loadDESMode(modeKey)
+        println("Using $mode mode of operation...")
+        val encryptedText = DES.encrypt(clearText.toByteArray(), key.toByteArray(), mode)
+        val decryptedText = DES.decrypt(encryptedText, key.toByteArray(), mode)
+        printResults(clearText, encryptedText, decryptedText)
+    } catch (e: IOException) {
+        throw RuntimeException("Failed to read cleartext from file", e)
     }
+}
 
-    private static String loadClearTextFromFile(String filePath) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    }
+@Throws(IOException::class)
+private fun loadClearTextFromFile(filePath: String): String {
+    return String(Files.readAllBytes(Paths.get(filePath)))
+}
 
-    private static DESMode loadDESMode(CommandLine cmd) {
-        return DESMode.valueOf(cmd.getOptionValue("m").toUpperCase());
-    }
+private fun loadDESMode(modeKey: String?): DESMode {
+    return DESMode.valueOf(modeKey?.uppercase(Locale.getDefault()) ?: "ECB")
+}
 
-    private static void printResults(String clearText, byte[] encryptedText, byte[] decryptedText) {
-        System.out.println("Clear text: " + clearText);
-        System.out.println("Encrypted text: " + new BigInteger(encryptedText).toString(16));
-        System.out.println("Decrypted text: " + new String(decryptedText));
-    }
+private fun printResults(clearText: String, encryptedText: ByteArray, decryptedText: ByteArray) {
+    println("Clear text: $clearText")
+    println("Encrypted text: " + BigInteger(encryptedText).toString(16))
+    println("Decrypted text: " + String(decryptedText))
 }

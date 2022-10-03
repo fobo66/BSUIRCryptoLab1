@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClass.set("io.fobo66.crypto.Lab1")
+    mainClass.set("io.fobo66.crypto.Lab1Kt")
 }
 
 allprojects{
@@ -20,5 +20,6 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    implementation("commons-cli:commons-cli:1.5.0")
+    implementation("org.jetbrains:annotations:23.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
 }
