@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.7.20"
     application
@@ -13,8 +15,8 @@ allprojects{
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-  options.compilerArgs.addAll(listOf("--add-modules", "java.xml"))
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.jvmTarget = "11"
 }
 
 dependencies {
