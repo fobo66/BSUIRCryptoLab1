@@ -20,6 +20,5 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    implementation("org.jetbrains:annotations:23.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
 }
