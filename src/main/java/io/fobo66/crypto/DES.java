@@ -75,7 +75,7 @@ public class DES {
 
             }};
 
-    private static void setBit(@NotNull byte[] data, int pos, int val) {
+    private static void setBit(byte @NotNull [] data, int pos, int val) {
         int posByte = pos / 8;
         int posBit = pos % 8;
         byte tmpB = data[posByte];
@@ -84,15 +84,14 @@ public class DES {
         data[posByte] = newByte;
     }
 
-    private static int extractBit(@NotNull byte[] data, int pos) {
+    private static int extractBit(byte @NotNull [] data, int pos) {
         int posByte = pos / 8;
         int posBit = pos % 8;
         byte tmpB = data[posByte];
         return tmpB >> (8 - (posBit + 1)) & 0x0001;
     }
 
-    @NotNull
-    private static byte[] rotateLeft(byte[] input, int len, int pas) {
+    private static byte @NotNull [] rotateLeft(byte[] input, int len, int pas) {
         int nrBytes = (len - 1) / 8 + 1;
         byte[] out = new byte[nrBytes];
         for (int i = 0; i < len; i++) {
@@ -102,8 +101,7 @@ public class DES {
         return out;
     }
 
-    @NotNull
-    private static byte[] extractBits(byte[] input, int pos, int n) {
+    private static byte @NotNull [] extractBits(byte[] input, int pos, int n) {
         int numOfBytes = (n - 1) / 8 + 1;
         byte[] out = new byte[numOfBytes];
         for (int i = 0; i < n; i++) {
@@ -114,8 +112,7 @@ public class DES {
 
     }
 
-    @NotNull
-    private static byte[] permute(byte[] input, @NotNull int[] table) {
+    private static byte @NotNull [] permute(byte @NotNull [] input, int @NotNull [] table) {
         int nrBytes = (table.length - 1) / 8 + 1;
         byte[] out = new byte[nrBytes];
         for (int i = 0; i < table.length; i++) {
@@ -126,8 +123,7 @@ public class DES {
 
     }
 
-    @NotNull
-    private static byte[] xorBytes(@NotNull byte[] a, @NotNull byte[] b) {
+    private static byte @NotNull [] xorBytes(byte @NotNull [] a, byte @NotNull [] b) {
         byte[] out = new byte[a.length];
         for (int i = 0; i < a.length; i++) {
             out[i] = (byte) (a[i] ^ b[i]);
@@ -136,8 +132,7 @@ public class DES {
 
     }
 
-    @NotNull
-    private static byte[] encrypt64Block(@NotNull byte[] block, byte[] key, boolean isDecrypt) {
+    private static byte @NotNull [] encrypt64Block(byte @NotNull [] block, byte @NotNull [] key, boolean isDecrypt) {
         byte[] result = new byte[block.length];
         byte[] R = new byte[block.length / 2];
         byte[] L = new byte[block.length / 2];
@@ -164,8 +159,7 @@ public class DES {
         return result;
     }
 
-    @NotNull
-    private static byte[] f_func(byte[] R, byte[] K) {
+    private static byte @NotNull [] f_func(byte @NotNull [] R, byte @NotNull [] K) {
         byte[] result;
         result = permute(R, expandTbl);
         result = xorBytes(result, K);
@@ -174,7 +168,7 @@ public class DES {
         return result;
     }
 
-    private static byte[] s_func(byte[] in) {
+    private static byte @NotNull [] s_func(byte @NotNull [] in) {
         in = separateBytes(in, 6);
         byte[] out = new byte[in.length / 2];
         int halfByte = 0;
@@ -191,8 +185,7 @@ public class DES {
         return out;
     }
 
-    @NotNull
-    private static byte[] separateBytes(@NotNull byte[] in, int length) {
+    private static byte @NotNull [] separateBytes(byte @NotNull [] in, int length) {
         int numOfBytes = (8 * in.length - 1) / length + 1;
         byte[] out = new byte[numOfBytes];
         for (int i = 0; i < numOfBytes; i++) {
@@ -204,8 +197,7 @@ public class DES {
         return out;
     }
 
-    @NotNull
-    private static byte[] concatBits(byte[] a, int aLen, byte[] b, int bLen) {
+    private static byte @NotNull [] concatBits(byte[] a, int aLen, byte[] b, int bLen) {
         int numOfBytes = (aLen + bLen - 1) / 8 + 1;
         byte[] out = new byte[numOfBytes];
         int j = 0;
@@ -222,8 +214,7 @@ public class DES {
         return out;
     }
 
-    @NotNull
-    private static byte[] deletePadding(@NotNull byte[] input) {
+    private static byte @NotNull [] deletePadding(byte @NotNull [] input) {
         int count = 0;
 
         int i = input.length - 1;
@@ -237,8 +228,7 @@ public class DES {
         return result;
     }
 
-    @NotNull
-    private static byte[][] generateSubKeys(byte[] key) {
+    private static byte[] @NotNull [] generateSubKeys(byte @NotNull [] key) {
         byte[][] result = new byte[16][];
         byte[] tmpK = permute(key, PC1);
 
@@ -258,8 +248,7 @@ public class DES {
         return result;
     }
 
-    @NotNull
-    public static byte[] encrypt(@NotNull byte[] data, @NotNull byte[] key, DESMode mode) {
+    public static byte @NotNull [] encrypt(byte @NotNull [] data, byte @NotNull [] key, DESMode mode) {
         int i;
         int length = 8 - data.length % 8;
         byte[] padding = new byte[length];
@@ -314,8 +303,7 @@ public class DES {
         return result;
     }
 
-    @NotNull
-    public static byte[] decrypt(@NotNull byte[] data, @NotNull byte[] key, DESMode mode) {
+    public static byte @NotNull [] decrypt(byte @NotNull [] data, byte @NotNull [] key, DESMode mode) {
         int i;
         byte[] result = new byte[data.length];
         byte[] block = new byte[8];
