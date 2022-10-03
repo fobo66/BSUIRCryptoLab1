@@ -9,14 +9,14 @@ application {
     mainClass.set("io.fobo66.crypto.Lab1Kt")
 }
 
-allprojects{
+allprojects {
     repositories {
         mavenCentral()
     }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "11"
 }
 
 dependencies {
