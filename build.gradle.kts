@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version libs.versions.kotlin
     application
 }
 
@@ -20,5 +20,5 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+    implementation(libs.cli)
 }
