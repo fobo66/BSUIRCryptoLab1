@@ -47,6 +47,6 @@ private fun loadDESMode(modeKey: String?): DESMode {
 
 private fun printResults(clearText: String, encryptedText: ByteArray, decryptedText: ByteArray) {
     println("Clear text: $clearText")
-    println("Encrypted text: " + BigInteger(encryptedText).toString(16))
+    println("Encrypted text: " + BigInteger(1, encryptedText).toString(16))
     println("Decrypted text: " + String(decryptedText))
 }
