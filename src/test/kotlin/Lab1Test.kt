@@ -1,25 +1,48 @@
 package io.fobo66.crypto
 
-import java.util.Base64
+import java.util.*
 import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class Lab1Test {
-    @kotlin.test.Test
+
+    @Test
     fun `DES encryption works`() {
         val encoder = Base64.getEncoder()
-        val key = SecretKeySpec(KEY.toByteArray(), "DES")
-        val cipher = Cipher.getInstance("DES")
-        cipher.init(Cipher.ENCRYPT_MODE, key)
+        val key = KeyGenerator.getInstance("DES").generateKey()
+        val cipher = Cipher.getInstance("DES/CBC/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(DES.initializationVector))
         val expectedEncryptionResult = cipher.doFinal(CLEARTEXT.toByteArray())
 
-        val encryptionResult = DES.encrypt(CLEARTEXT.toByteArray(), KEY.toByteArray(), DESMode.ECB)
+        val encryptionResult = DES.encrypt(CLEARTEXT.toByteArray(), key.encoded, DESMode.CBC)
         assertEquals(encoder.encodeToString(expectedEncryptionResult), encoder.encodeToString(encryptionResult))
     }
 
+    @Test
+    fun `DES decryption works`() {
+        val encryptionResult = DES.encrypt(CLEARTEXT.toByteArray(), KEY.toByteArray(), DESMode.CBC)
+        val decryptionResult = DES.decrypt(encryptionResult, KEY.toByteArray(), DESMode.CBC)
+        assertEquals(CLEARTEXT, decryptionResult.toString(Charsets.UTF_8))
+    }
+
+    @Test
+    fun `DES encryption in different modes produces different results`() {
+        val encoder = Base64.getEncoder()
+
+        val cleartextBytes = CLEARTEXT.toByteArray()
+        val keyBytes = KEY.toByteArray()
+        val encryptionResultEcb = DES.encrypt(cleartextBytes, keyBytes, DESMode.ECB)
+        val encryptionResultCbc = DES.encrypt(cleartextBytes, keyBytes, DESMode.CBC)
+        assertNotEquals(encoder.encodeToString(encryptionResultEcb), encoder.encodeToString(encryptionResultCbc))
+    }
+
     companion object {
-        private const val CLEARTEXT = "test test test"
+        private const val CLEARTEXT = "testtesttesttest"
         private const val KEY = "testtest"
     }
 }
