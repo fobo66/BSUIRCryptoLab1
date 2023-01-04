@@ -3,15 +3,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
+    `jvm-test-suite`
 }
 
 application {
     mainClass.set("io.fobo66.crypto.Lab1Kt")
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useKotlinTest(libs.versions.kotlin)
+        }
     }
 }
 
