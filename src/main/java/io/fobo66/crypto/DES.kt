@@ -118,16 +118,6 @@ object DES {
         return tmpB.toInt() shr 8 - (posBit + 1) and 0x0001
     }
 
-    private fun rotateLeft(input: ByteArray, len: Int, pas: Int): ByteArray {
-        val nrBytes = (len - 1) / 8 + 1
-        val out = ByteArray(nrBytes)
-        for (i in 0 until len) {
-            val `val` = extractBit(input, (i + pas) % len)
-            setBit(out, i, `val`)
-        }
-        return out
-    }
-
     private fun extractBits(input: ByteArray, pos: Int, n: Int): ByteArray {
         val numOfBytes = (n - 1) / 8 + 1
         val out = ByteArray(numOfBytes)
@@ -247,8 +237,8 @@ object DES {
         var C = extractBits(tmpK, 0, PC1.size / 2)
         var D = extractBits(tmpK, PC1.size / 2, PC1.size / 2)
         for (i in 0..15) {
-            C = rotateLeft(C, 28, keyShift[i])
-            D = rotateLeft(D, 28, keyShift[i])
+            C = C.rotateLeft(28, keyShift[i])
+            D = D.rotateLeft(28, keyShift[i])
             val cd = concatBits(C, 28, D, 28)
             result[i] = permute(cd, PC2)
         }
