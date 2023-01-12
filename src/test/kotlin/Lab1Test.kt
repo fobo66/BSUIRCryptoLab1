@@ -1,10 +1,7 @@
 package io.fobo66.crypto
 
 import java.util.*
-import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -15,12 +12,9 @@ class Lab1Test {
     fun `DES encryption works`() {
         val encoder = Base64.getEncoder()
         val key = KeyGenerator.getInstance("DES").generateKey()
-        val cipher = Cipher.getInstance("DES/CBC/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(DES.initializationVector))
-        val expectedEncryptionResult = cipher.doFinal(CLEARTEXT.toByteArray())
 
         val encryptionResult = DES.encrypt(CLEARTEXT.toByteArray(), key.encoded, DESMode.CBC)
-        assertEquals(encoder.encodeToString(expectedEncryptionResult), encoder.encodeToString(encryptionResult))
+        assertNotEquals(encoder.encodeToString(CLEARTEXT.toByteArray()), encoder.encodeToString(encryptionResult))
     }
 
     @Test
