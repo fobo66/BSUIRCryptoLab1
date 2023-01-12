@@ -227,7 +227,7 @@ object DES {
             i--
         }
         val result = ByteArray(input.size - count - 1)
-        input.copyInto(result, endIndex = result.size)
+        System.arraycopy(input, 0, result, 0, result.size)
         return result
     }
 
@@ -249,9 +249,9 @@ object DES {
         val length = 8 - data.size % 8
         val padding = ByteArray(length)
         var feedback = ByteArray(8)
-        IV.copyInto(feedback, endIndex = feedback.size)
+        System.arraycopy(IV, 0, feedback, 0, feedback.size)
         padding[0] = 0x80.toByte()
-        padding.fill(0, fromIndex = 1)
+        Arrays.fill(padding, 1, length, 0.toByte())
         val result = ByteArray(data.size + length)
         var block = ByteArray(8)
         var processedBlock = ByteArray(8)
@@ -279,7 +279,7 @@ object DES {
                         processedBlock = xorBytes(processedBlock, block)
                     }
                 }
-                processedBlock.copyInto(result, destinationOffset = i - 8, endIndex = block.size)
+                System.arraycopy(processedBlock, 0, result, i - 8, block.size)
             }
             if (i < data.size) block[i % 8] = data[i] else {
                 block[i % 8] = padding[count % 8]
@@ -289,7 +289,7 @@ object DES {
         }
         if (block.size == 8) {
             block = encrypt64Block(block, key, false)
-            block.copyInto(result, destinationOffset = i - 8, endIndex = block.size)
+            System.arraycopy(block, 0, result, i - 8, block.size)
         }
         return result
     }
@@ -299,7 +299,7 @@ object DES {
         var block = ByteArray(8)
         var processedBlock = ByteArray(8)
         var feedback = ByteArray(8)
-        IV.copyInto(feedback, endIndex = feedback.size)
+        System.arraycopy(IV, 0, feedback, 0, feedback.size)
         var i = 0
         while (i < data.size) {
             if (i > 0 && i % 8 == 0) {
@@ -323,13 +323,13 @@ object DES {
                         processedBlock = xorBytes(processedBlock, block)
                     }
                 }
-                processedBlock.copyInto(result, destinationOffset = i - 8, endIndex = block.size)
+                System.arraycopy(processedBlock, 0, result, i - 8, block.size)
             }
             block[i % 8] = data[i]
             i++
         }
         block = encrypt64Block(block, key, true)
-        block.copyInto(result, destinationOffset = i - 8)
+        System.arraycopy(block, 0, result, i - 8, block.size)
         result = deletePadding(result)
         return result
     }
