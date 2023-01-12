@@ -176,8 +176,7 @@ object DES {
     }
 
     private fun sFunc(input: ByteArray): ByteArray {
-        var tempInput = input
-        tempInput = separateBytes(tempInput, 6)
+        val tempInput = separateBytes(input.copyOf(), 6)
         val out = ByteArray(tempInput.size / 2)
         var halfByte = 0
         for (b in tempInput.indices) {
@@ -195,8 +194,8 @@ object DES {
         val out = ByteArray(numOfBytes)
         for (i in 0 until numOfBytes) {
             for (j in 0 until length) {
-                val `val` = extractBit(input, length * i + j)
-                setBit(out, 8 * i + j, `val`)
+                val bit = input.extractBit(length * i + j)
+                out.setBit(8 * i + j, bit)
             }
         }
         return out
