@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber") // too many of them
 package io.fobo66.crypto
 
 import java.util.*
@@ -167,7 +168,7 @@ object DES {
     }
 
     fun decrypt(data: ByteArray, key: ByteArray, mode: DESMode): ByteArray {
-        var result = ByteArray(data.size)
+        val result = ByteArray(data.size)
         var block = ByteArray(BLOCK_SIZE)
         var processedBlock = ByteArray(BLOCK_SIZE)
         var feedback = ByteArray(BLOCK_SIZE)
@@ -319,7 +320,7 @@ object DES {
             out[i] = this[i]
         }
 
-        for (t in 1..times) {
+        repeat((1..times).count()) {
             val temp = out[0]
             for (i in 1 until len) out[i - 1] = out[i]
             out[len - 1] = temp

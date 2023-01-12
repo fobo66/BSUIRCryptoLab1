@@ -1,9 +1,8 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
     `jvm-test-suite`
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
 }
 
 application {

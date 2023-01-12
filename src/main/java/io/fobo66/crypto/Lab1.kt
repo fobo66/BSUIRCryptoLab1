@@ -9,15 +9,32 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 
+const val RADIX = 16
+
 fun main(args: Array<String>) {
     var clearText = "Hello World!"
     val mode: DESMode
 
     val parser = ArgParser("lab1")
 
-    val inputFile by parser.option(ArgType.String, fullName = "file", shortName = "f", description = "Input file")
-    val key by parser.option(ArgType.String, fullName = "key", shortName = "k", description = "Encryption key").default("password")
-    val modeKey by parser.option(ArgType.String, fullName = "mode", shortName = "m", description = "Operation mode for DES (ECB, CBC, CFB, OFB)").default("ECB")
+    val inputFile by parser.option(
+        ArgType.String,
+        fullName = "file",
+        shortName = "f",
+        description = "Input file"
+    )
+    val key by parser.option(
+        ArgType.String,
+        fullName = "key",
+        shortName = "k",
+        description = "Encryption key"
+    ).default("password")
+    val modeKey by parser.option(
+        ArgType.String,
+        fullName = "mode",
+        shortName = "m",
+        description = "Operation mode for DES (ECB, CBC, CFB, OFB)"
+    ).default("ECB")
 
     try {
         parser.parse(args)
@@ -32,7 +49,7 @@ fun main(args: Array<String>) {
         val decryptedText = DES.decrypt(encryptedText, key.toByteArray(), mode)
         printResults(clearText, encryptedText, decryptedText)
     } catch (e: IOException) {
-        throw RuntimeException("Failed to read cleartext from file", e)
+        throw IllegalStateException("Failed to read cleartext from file", e)
     }
 }
 
@@ -47,6 +64,6 @@ private fun loadDESMode(modeKey: String?): DESMode {
 
 private fun printResults(clearText: String, encryptedText: ByteArray, decryptedText: ByteArray) {
     println("Clear text: $clearText")
-    println("Encrypted text: " + BigInteger(1, encryptedText).toString(16))
-    println("Decrypted text: " + String(decryptedText))
+    println("Encrypted text: " + BigInteger(1, encryptedText).toString(RADIX))
+    println("Decrypted text: " + decryptedText.toString(Charsets.UTF_8))
 }
