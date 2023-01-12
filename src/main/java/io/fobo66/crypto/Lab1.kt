@@ -13,7 +13,6 @@ const val RADIX = 16
 
 fun main(args: Array<String>) {
     var clearText = "Hello World!"
-    val mode: DESMode
 
     val parser = ArgParser("lab1")
 
@@ -29,12 +28,12 @@ fun main(args: Array<String>) {
         shortName = "k",
         description = "Encryption key"
     ).default("password")
-    val modeKey by parser.option(
-        ArgType.String,
+    val mode by parser.option(
+        ArgType.Choice<DESMode>(),
         fullName = "mode",
         shortName = "m",
         description = "Operation mode for DES (ECB, CBC, CFB, OFB)"
-    ).default("ECB")
+    ).default(DESMode.ECB)
 
     try {
         parser.parse(args)
@@ -43,7 +42,6 @@ fun main(args: Array<String>) {
             println("Reading cleartext from file $filePath...")
             clearText = loadClearTextFromFile(filePath)
         }
-        mode = loadDESMode(modeKey)
         println("Using $mode mode of operation...")
         val encryptedText = DES.encrypt(clearText.toByteArray(), key.toByteArray(), mode)
         val decryptedText = DES.decrypt(encryptedText, key.toByteArray(), mode)
@@ -56,10 +54,6 @@ fun main(args: Array<String>) {
 @Throws(IOException::class)
 private fun loadClearTextFromFile(filePath: String): String {
     return String(Files.readAllBytes(Paths.get(filePath)))
-}
-
-private fun loadDESMode(modeKey: String?): DESMode {
-    return DESMode.valueOf(modeKey?.uppercase(Locale.getDefault()) ?: "ECB")
 }
 
 private fun printResults(clearText: String, encryptedText: ByteArray, decryptedText: ByteArray) {
