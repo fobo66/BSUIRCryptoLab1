@@ -14,8 +14,8 @@ class Lab1Test {
     fun `DES encryption works`() {
         val encoder = Base64.getEncoder()
         val key = KeyGenerator.getInstance("DES").generateKey()
-        val cipher = Cipher.getInstance("DES/CBC/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(DES.initializationVector))
+        val cipher = Cipher.getInstance("DES/CBC/PKCS5Padding")
+        cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(DES.IV))
         val expectedEncryptionResult = cipher.doFinal(CLEARTEXT.toByteArray())
 
         val encryptionResult = DES.encrypt(CLEARTEXT.toByteArray(), key.encoded, DESMode.CBC)
