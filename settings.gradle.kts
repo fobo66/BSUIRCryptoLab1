@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             version("kotlin", "1.9.0")
-            library("cli", "org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+            library("cli", "org.jetbrains.kotlinx:kotlinx-cli:0.3.6")
         }
     }
 }
