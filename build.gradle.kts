@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
     `jvm-test-suite`
-    id("io.gitlab.arturbosch.detekt") version "1.23.3"
+    id("io.gitlab.arturbosch.detekt") version "1.23.4"
 }
 
 application {
