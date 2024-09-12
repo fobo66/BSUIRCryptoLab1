@@ -1,12 +1,14 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
     `jvm-test-suite`
-    id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    alias(libs.plugins.detekt)
 }
 
 application {
-    mainClass.set("io.fobo66.crypto.Lab1Kt")
+    mainClass = "io.fobo66.crypto.Lab1Kt"
 }
 
 testing {
@@ -17,8 +19,15 @@ testing {
     }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 kotlin {
-    jvmToolchain(17)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
 }
 
 dependencies {
