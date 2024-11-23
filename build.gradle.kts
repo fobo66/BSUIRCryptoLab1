@@ -30,6 +30,17 @@ kotlin {
     }
 }
 
+tasks {
+    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        // Target version of the generated JVM bytecode. It is used for type resolution.
+        jvmTarget = "21"
+    }
+    withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
+        // Target version of the generated JVM bytecode. It is used for type resolution.
+        jvmTarget = "21"
+    }
+}
+
 dependencies {
     implementation(libs.cli)
 }
