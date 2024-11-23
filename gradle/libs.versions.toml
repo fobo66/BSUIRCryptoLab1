@@ -1,0 +1,11 @@
+[versions]
+kotlin = "2.0.21"
+detekt = "1.23.7"
+cli = "0.3.6"
+
+[libraries]
+cli = { module = "org.jetbrains.kotlinx:kotlinx-cli", version.ref = "cli" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

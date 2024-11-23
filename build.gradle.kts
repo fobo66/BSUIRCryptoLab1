@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin
+    alias(libs.plugins.kotlin)
     application
     `jvm-test-suite`
     alias(libs.plugins.detekt)
