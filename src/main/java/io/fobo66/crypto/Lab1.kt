@@ -8,6 +8,7 @@ import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.readText
 
 const val RADIX = 16
 
@@ -53,7 +54,7 @@ fun main(args: Array<String>) {
 
 @Throws(IOException::class)
 private fun loadClearTextFromFile(filePath: String): String {
-    return String(Files.readAllBytes(Paths.get(filePath)))
+    return Paths.get(filePath).readText()
 }
 
 private fun printResults(clearText: String, encryptedText: ByteArray, decryptedText: ByteArray) {
