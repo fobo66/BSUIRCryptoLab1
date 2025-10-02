@@ -13,7 +13,7 @@ application {
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {
+        named<JvmTestSuite>("test") {
             useKotlinTest(libs.versions.kotlin)
         }
     }
