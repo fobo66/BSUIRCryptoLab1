@@ -229,12 +229,13 @@ object DES {
 
     private fun deletePadding(input: ByteArray): ByteArray {
         var count = 0
+        val paddingValue = input.last()
         var i = input.size - 1
-        while (input[i].toInt() == 0) {
+        while (input[i] == paddingValue) {
             count++
             i--
         }
-        val result = ByteArray(input.size - count - 1)
+        val result = ByteArray(input.size - count)
         System.arraycopy(input, 0, result, 0, result.size)
         return result
     }
@@ -258,8 +259,7 @@ object DES {
         val padding = ByteArray(length)
         var feedback = ByteArray(8)
         System.arraycopy(IV, 0, feedback, 0, feedback.size)
-        padding[0] = 0x80.toByte()
-        padding.fill(0.toByte(), 1, length)
+        padding.fill(length.toByte())
         val result = ByteArray(data.size + length)
         var block = ByteArray(8)
         var processedBlock: ByteArray
