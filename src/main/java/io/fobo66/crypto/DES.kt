@@ -1,8 +1,6 @@
 @file:Suppress("MagicNumber") // too many of them
 package io.fobo66.crypto
 
-import java.util.*
-
 @Suppress("TooManyFunctions") // cannot extract them properly
 object DES {
     // initialization vector for CBC, CFB and OFB modes
@@ -261,10 +259,10 @@ object DES {
         var feedback = ByteArray(8)
         System.arraycopy(IV, 0, feedback, 0, feedback.size)
         padding[0] = 0x80.toByte()
-        Arrays.fill(padding, 1, length, 0.toByte())
+        padding.fill(0.toByte(), 1, length)
         val result = ByteArray(data.size + length)
         var block = ByteArray(8)
-        var processedBlock = ByteArray(8)
+        var processedBlock: ByteArray
         var count = 0
         var i = 0
         while (i < data.size + length) {
@@ -285,7 +283,7 @@ object DES {
 
                     DESMode.OFB -> {
                         processedBlock = encrypt64Block(feedback, key, false)
-                        feedback = Arrays.copyOfRange(processedBlock, 0, 8)
+                        feedback = processedBlock.copyOfRange(0, 8)
                         processedBlock = xorBytes(processedBlock, block)
                     }
                 }
@@ -307,7 +305,7 @@ object DES {
     fun decrypt(data: ByteArray, key: ByteArray, mode: DESMode): ByteArray {
         var result = ByteArray(data.size)
         var block = ByteArray(8)
-        var processedBlock = ByteArray(8)
+        var processedBlock: ByteArray
         var feedback = ByteArray(8)
         System.arraycopy(IV, 0, feedback, 0, feedback.size)
         var i = 0
