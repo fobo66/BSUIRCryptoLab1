@@ -203,8 +203,8 @@ object DES {
         val out = ByteArray(numOfBytes)
         for (i in 0 until numOfBytes) {
             for (j in 0 until length) {
-                val `val` = extractBit(input, length * i + j)
-                setBit(out, 8 * i + j, `val`)
+                val bit = extractBit(input, length * i + j)
+                setBit(out, 8 * i + j, bit)
             }
         }
         return out
@@ -220,8 +220,8 @@ object DES {
             j++
         }
         for (i in 0 until bLen) {
-            val `val` = extractBit(b, i)
-            setBit(out, j, `val`)
+            val bit = extractBit(b, i)
+            setBit(out, j, bit)
             j++
         }
         return out
