@@ -1,7 +1,7 @@
 [versions]
 clikt = "5.1.0"
 detekt = "2.0.0-alpha.5"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 
 [libraries]
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
